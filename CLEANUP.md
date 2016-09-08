@@ -21,3 +21,10 @@ And some ideal objectives:
 
 ## Progress Notes ##
 - **2016-09-07**: Cleaned up whitespace in quite a few files
+
+
+## Other Notes ##
+
+### CFLAGS ###
+
+	-march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O2 -Wall -pthread -pipe -fstack-protector --param=ssp-buffer-size=4
