@@ -1,11 +1,11 @@
 {
   "name": "RF24",
-  "keywords": "rf, radio, wireless, spi",
+  "keywords": "rf, radio, wireless, spi, nrf24l01, nrf, nordic",
   "description": "Optimized High Speed Driver for nRF24L01(+) 2.4GHz Wireless Transceiver",
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/TMRh20/RF24.git"
+    "url": "https://github.com/unforgiven-development/RF24.git"
   },
   "version": "1.1.7",
   "frameworks": "arduino",

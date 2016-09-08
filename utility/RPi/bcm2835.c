@@ -1,12 +1,13 @@
-/* bcm2835.c
-// C and C++ support for Broadcom BCM 2835 as used in Raspberry Pi
-// http://elinux.org/RPi_Low-level_peripherals
-// http://www.raspberrypi.org/wp-content/uploads/2012/02/BCM2835-ARM-Peripherals.pdf
-//
-// Author: Mike McCauley
-// Copyright (C) 2011-2013 Mike McCauley
-// $Id: bcm2835.c,v 1.23 2015/03/31 04:55:41 mikem Exp mikem $
-*/
+/*
+ * bcm2835.c
+ * C and C++ support for Broadcom BCM 2835 as used in Raspberry Pi
+ * http://elinux.org/RPi_Low-level_peripherals
+ * http://www.raspberrypi.org/wp-content/uploads/2012/02/BCM2835-ARM-Peripherals.pdf
+ *
+ * Author: Mike McCauley
+ * Copyright (C) 2011-2013 Mike McCauley
+ * $Id: bcm2835.c,v 1.23 2015/03/31 04:55:41 mikem Exp mikem $
+ */
 
 
 #include <stdlib.h>
@@ -23,30 +24,35 @@
 #define BCK2835_LIBRARY_BUILD
 #include "bcm2835.h"
 
-/* This define enables a little test program (by default a blinking output on pin RPI_GPIO_PIN_11)
-// You can do some safe, non-destructive testing on any platform with:
-// gcc bcm2835.c -D BCM2835_TEST
-// ./a.out
-*/
+/*
+ * This define enables a little test program (by default a blinking output on pin RPI_GPIO_PIN_11)
+ * You can do some safe, non-destructive testing on any platform with:
+ * gcc bcm2835.c -D BCM2835_TEST
+ * ./a.out
+ */
 /*#define BCM2835_TEST*/
 
-/* Uncommenting this define compiles alternative I2C code for the version 1 RPi
-// The P1 header I2C pins are connected to SDA0 and SCL0 on V1.
-// By default I2C code is generated for the V2 RPi which has SDA1 and SCL1 connected.
-*/
+/*
+ * Uncommenting this define compiles alternative I2C code for the version 1 RPi
+ * The P1 header I2C pins are connected to SDA0 and SCL0 on V1.
+ * By default I2C code is generated for the V2 RPi which has SDA1 and SCL1 connected.
+ */
 /* #define I2C_V1*/
 
-/* Physical address and size of the peripherals block
-// May be overridden on RPi2
-*/
+/*
+ * Physical address and size of the peripherals block
+ * May be overridden on RPi2
+ */
 uint32_t *bcm2835_peripherals_base = (uint32_t *)BCM2835_PERI_BASE;
 uint32_t bcm2835_peripherals_size = BCM2835_PERI_SIZE;
 
-/* Virtual memory address of the mapped peripherals block 
+/*
+ * Virtual memory address of the mapped peripherals block
  */
 uint32_t *bcm2835_peripherals = (uint32_t *)MAP_FAILED;
 
-/* And the register bases within the peripherals block
+/*
+ * And the register bases within the peripherals block
  */
 volatile uint32_t *bcm2835_gpio        = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_pwm         = (uint32_t *)MAP_FAILED;
@@ -58,13 +64,15 @@ volatile uint32_t *bcm2835_bsc1        = (uint32_t *)MAP_FAILED;
 volatile uint32_t *bcm2835_st	       = (uint32_t *)MAP_FAILED;
 
 
-/* This variable allows us to test on hardware other than RPi.
-// It prevents access to the kernel memory, and does not do any peripheral access
-// Instead it prints out what it _would_ do if debug were 0
-*/
+/*
+ * This variable allows us to test on hardware other than RPi.
+ * It prevents access to the kernel memory, and does not do any peripheral access
+ * Instead it prints out what it _would_ do if debug were 0
+ */
 static uint8_t debug = 0;
 
-/* I2C The time needed to transmit one byte. In microseconds.
+/*
+ * I2C The time needed to transmit one byte. In microseconds.
  */
 static int i2c_byte_wait_us = 0;
 
@@ -72,65 +80,66 @@ static int i2c_byte_wait_us = 0;
 static unsigned long long epoch ;
 
 /*
-// Low level register access functions
-*/
+ * Low level register access functions
+ */
 
 /* Function to return the pointers to the hardware register bases */
 uint32_t* bcm2835_regbase(uint8_t regbase)
 {
-    switch (regbase)
-    {
-	case BCM2835_REGBASE_ST:
-	    return (uint32_t *)bcm2835_st;
-	case BCM2835_REGBASE_GPIO:
-	    return (uint32_t *)bcm2835_gpio;
-	case BCM2835_REGBASE_PWM:
-	    return (uint32_t *)bcm2835_pwm;
-	case BCM2835_REGBASE_CLK:
-	    return (uint32_t *)bcm2835_clk;
-	case BCM2835_REGBASE_PADS:
-	    return (uint32_t *)bcm2835_pads;
-	case BCM2835_REGBASE_SPI0:
-	    return (uint32_t *)bcm2835_spi0;
-	case BCM2835_REGBASE_BSC0:
-	    return (uint32_t *)bcm2835_bsc0;
-	case BCM2835_REGBASE_BSC1:
-	    return (uint32_t *)bcm2835_st;
-    }
-    return (uint32_t *)MAP_FAILED;
+  switch (regbase)
+  {
+    case BCM2835_REGBASE_ST:
+      return (uint32_t *)bcm2835_st;
+    case BCM2835_REGBASE_GPIO:
+      return (uint32_t *)bcm2835_gpio;
+    case BCM2835_REGBASE_PWM:
+      return (uint32_t *)bcm2835_pwm;
+    case BCM2835_REGBASE_CLK:
+      return (uint32_t *)bcm2835_clk;
+    case BCM2835_REGBASE_PADS:
+      return (uint32_t *)bcm2835_pads;
+    case BCM2835_REGBASE_SPI0:
+      return (uint32_t *)bcm2835_spi0;
+    case BCM2835_REGBASE_BSC0:
+      return (uint32_t *)bcm2835_bsc0;
+    case BCM2835_REGBASE_BSC1:
+      return (uint32_t *)bcm2835_st;
+  }
+  return (uint32_t *)MAP_FAILED;
 }
 
 void  bcm2835_set_debug(uint8_t d)
 {
-    debug = d;
+  debug = d;
 }
 
 unsigned int bcm2835_version(void) 
 {
-    return BCM2835_VERSION;
+  return BCM2835_VERSION;
 }
 
-/* Read with memory barriers from peripheral
- *
+/*
+ * Read with memory barriers from peripheral
  */
 uint32_t bcm2835_peri_read(volatile uint32_t* paddr)
 {
-    uint32_t ret;
-    if (debug)
-    {
-        printf("bcm2835_peri_read  paddr %08X\n", (unsigned) paddr);
-	return 0;
-    }
-    else
-    {
-       __sync_synchronize();
-       ret = *paddr;
-       __sync_synchronize();
-       return ret;
-    }
+  uint32_t ret;
+  if (debug)
+  {
+    printf("bcm2835_peri_read  paddr %08X\n", (unsigned) paddr);
+    return 0;
+  }
+  else
+  {
+     __sync_synchronize();
+     ret = *paddr;
+     __sync_synchronize();
+     return ret;
+  }
 }
 
-/* read from peripheral without the read barrier
+/*
+ * Read from peripheral without the read barrier
  * This can only be used if more reads to THE SAME peripheral
  * will follow.  The sequence must terminate with memory barrier
  * before any read or write to another peripheral can occur.
@@ -138,32 +147,32 @@ uint32_t bcm2835_peri_read(volatile uint32_t* paddr)
  */
 uint32_t bcm2835_peri_read_nb(volatile uint32_t* paddr)
 {
-    if (debug)
-    {
-	printf("bcm2835_peri_read_nb  paddr %08X\n", (unsigned) paddr);
-	return 0;
-    }
-    else
-    {
-	return *paddr;
-    }
+  if (debug)
+  {
+    printf("bcm2835_peri_read_nb  paddr %08X\n", (unsigned) paddr);
+    return 0;
+  }
+  else
+  {
+    return *paddr;
+  }
 }
 
-/* Write with memory barriers to peripheral
+/*
+ * Write with memory barriers to peripheral
  */
-
 void bcm2835_peri_write(volatile uint32_t* paddr, uint32_t value)
 {
-    if (debug)
-    {
-	printf("bcm2835_peri_write paddr %08X, value %08X\n", (unsigned) paddr, value);
-    }
-    else
-    {
-        __sync_synchronize();
-        *paddr = value;
-        __sync_synchronize();
-    }
+  if (debug)
+  {
+    printf("bcm2835_peri_write paddr %08X, value %08X\n", (unsigned) paddr, value);
+  }
+  else
+  {
+    __sync_synchronize();
+    *paddr = value;
+    __sync_synchronize();
+  }
 }
 
 /* write to peripheral without the write barrier */

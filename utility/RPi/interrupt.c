@@ -1,11 +1,11 @@
 /*
-Interrupts functions extruded from wiringPi library by Oitzu.
-
-wiringPi Copyright (c) 2012 Gordon Henderson
-https://projects.drogon.net/raspberry-pi/wiringpi
-wiringPi is free software: GNU Lesser General Public License
-see <http://www.gnu.org/licenses/>
-*/
+ * Interrupts functions extruded from wiringPi library by Oitzu.
+ *
+ * wiringPi Copyright (c) 2012 Gordon Henderson
+ * https://projects.drogon.net/raspberry-pi/wiringpi
+ * wiringPi is free software: GNU Lesser General Public License
+ * see <http://www.gnu.org/licenses/>
+ */
 
 #include <stdio.h>
 #include <unistd.h>
@@ -98,7 +98,7 @@ void *interruptHandler (void *arg)
       pthread_mutex_lock (&pinMutex) ;
       isrFunctions [myPin] () ;
       pthread_mutex_unlock (&pinMutex) ;
-	  pthread_testcancel(); //Cancel at this point if we have an cancellation request.
+	  pthread_testcancel(); // Cancel at this point if we have an cancellation request.
     }
 
   return NULL ;
@@ -179,12 +179,12 @@ int detachInterrupt (int pin)
     const char *modeS = "none";
 	pid_t pid ;
 	
-	if (pthread_cancel(threadId[pin]) != 0) //Cancel the thread
+	if (pthread_cancel(threadId[pin]) != 0) // Cancel the thread
 	{
 	 return 0;
 	}
 	
-	if (close(sysFds[pin]) != 0) //Close filehandle
+	if (close(sysFds[pin]) != 0) // Close filehandle
 	{
 		return 0;
 	}

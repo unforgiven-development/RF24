@@ -24,28 +24,28 @@
 #define SPI_MODE2 0x08
 #define SPI_MODE3 0x0C
 
-#define SPI_MODE_MASK 0x0C  // CPOL = bit 3, CPHA = bit 2 on SPCR
-#define SPI_CLOCK_MASK 0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
-#define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
+#define SPI_MODE_MASK 0x0C      // CPOL = bit 3, CPHA = bit 2 on SPCR
+#define SPI_CLOCK_MASK 0x03     // SPR1 = bit 1, SPR0 = bit 0 on SPCR
+#define SPI_2XCLOCK_MASK 0x01   // SPI2X = bit 0 on SPSR
 
 
 
 class SPIClass {
-public:
-  static byte transfer(byte _data);
+  public:
+    static byte transfer(byte _data);
 
-  // SPI Configuration methods
+    // SPI Configuration methods
+    inline static void attachInterrupt();
+    inline static void detachInterrupt(); // Default
 
-  inline static void attachInterrupt();
-  inline static void detachInterrupt(); // Default
+    static void begin();                  // Default
+    static void end();
 
-  static void begin(); // Default
-  static void end();
-
-  static void setBitOrder(uint8_t);
-  static void setDataMode(uint8_t);
-  static void setClockDivider(uint8_t);
+    static void setBitOrder(uint8_t);
+    static void setDataMode(uint8_t);
+    static void setClockDivider(uint8_t);
 };
+
 extern SPIClass SPI;
 
 /**

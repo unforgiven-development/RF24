@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CROSS_CC=arm-linux-gnueabihf-gcc
 CROSS_CXX=arm-linux-gnueabihf-g++

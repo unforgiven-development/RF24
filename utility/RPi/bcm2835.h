@@ -1,11 +1,11 @@
 /* bcm2835.h
-  
-   C and C++ support for Broadcom BCM 2835 as used in Raspberry Pi
-  
-   Author: Mike McCauley
-   Copyright (C) 2011-2013 Mike McCauley
-   $Id: bcm2835.h,v 1.20 2015/03/31 04:55:41 mikem Exp mikem $
-*/
+ *
+ * C and C++ support for Broadcom BCM 2835 as used in Raspberry Pi
+ *
+ * Author: Mike McCauley
+ * Copyright (C) 2011-2013 Mike McCauley
+ * $Id: bcm2835.h,v 1.20 2015/03/31 04:55:41 mikem Exp mikem $
+ */
 
 /*! \mainpage C library for Broadcom BCM 2835 as used in Raspberry Pi
   
