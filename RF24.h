@@ -1,9 +1,9 @@
 /*
- Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
+ * Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  */
 
 /**
@@ -28,7 +28,7 @@
  *
  * For use with setPALevel()
  */
-typedef enum { RF24_PA_MIN = 0,RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX, RF24_PA_ERROR } rf24_pa_dbm_e ;
+typedef enum { RF24_PA_MIN = 0, RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX, RF24_PA_ERROR } rf24_pa_dbm_e;
 
 /**
  * Data rate.  How fast data moves through the air.
@@ -47,50 +47,49 @@ typedef enum { RF24_CRC_DISABLED = 0, RF24_CRC_8, RF24_CRC_16 } rf24_crclength_e
 /**
  * Driver for nRF24L01(+) 2.4GHz Wireless Transceiver
  */
+class RF24 {
+  private:
+    #ifdef SOFTSPI
+    SoftSPI<SOFT_SPI_MISO_PIN, SOFT_SPI_MOSI_PIN, SOFT_SPI_SCK_PIN, SPI_MODE> spi;
+    #elif defined (SPI_UART)
+    SPIUARTClass uspi;
+    #endif
 
-class RF24
-{
-private:
-#ifdef SOFTSPI
-  SoftSPI<SOFT_SPI_MISO_PIN, SOFT_SPI_MOSI_PIN, SOFT_SPI_SCK_PIN, SPI_MODE> spi;
-#elif defined (SPI_UART)
-  SPIUARTClass uspi;
-#endif
+    #if defined (RF24_LINUX) || defined (XMEGA_D3) /* XMEGA can use SPI class */
+    SPI spi;
+    #endif
+    #if defined (MRAA)
+    GPIO gpio;
+    #endif
 
-#if defined (RF24_LINUX) || defined (XMEGA_D3) /* XMEGA can use SPI class */
-  SPI spi;
-#endif
-#if defined (MRAA)
-  GPIO gpio;
-#endif
+    uint8_t ce_pin;     /**< "Chip Enable" pin, activates the RX or TX role */
+    uint8_t csn_pin;    /**< SPI Chip select */
+    uint16_t spi_speed; /**< SPI Bus Speed */
+    #if defined (RF24_LINUX) || defined (XMEGA_D3)
+    uint8_t spi_rxbuff[32+1]; // SPI receive buffer (payload max 32 bytes)
+    uint8_t spi_txbuff[32+1]; // SPI transmit buffer (payload max 32 bytes + 1 byte for the command)
+    #endif  
+    bool p_variant; /* False for RF24L01 and true for RF24L01P */
 
-  uint8_t ce_pin; /**< "Chip Enable" pin, activates the RX or TX role */
-  uint8_t csn_pin; /**< SPI Chip select */
-  uint16_t spi_speed; /**< SPI Bus Speed */
-#if defined (RF24_LINUX) || defined (XMEGA_D3)
-  uint8_t spi_rxbuff[32+1] ; //SPI receive buffer (payload max 32 bytes)
-  uint8_t spi_txbuff[32+1] ; //SPI transmit buffer (payload max 32 bytes + 1 byte for the command)
-#endif  
-  bool p_variant; /* False for RF24L01 and true for RF24L01P */
-  uint8_t payload_size; /**< Fixed size of payloads */
-  bool dynamic_payloads_enabled; /**< Whether dynamic payloads are enabled. */
-  uint8_t pipe0_reading_address[5]; /**< Last address set on pipe 0 for reading. */
-  uint8_t addr_width; /**< The address width to use - 3,4 or 5 bytes. */
-  uint32_t txRxDelay; /**< Var for adjusting delays depending on datarate */
-  
+    uint8_t payload_size;             /**< Fixed size of payloads */
+    bool dynamic_payloads_enabled;    /**< Whether dynamic payloads are enabled. */
+    uint8_t pipe0_reading_address[5]; /**< Last address set on pipe 0 for reading. */
+    uint8_t addr_width;               /**< The address width to use - 3,4 or 5 bytes. */
+    uint32_t txRxDelay;               /**< Var for adjusting delays depending on datarate */
 
-protected:
-  /**
-   * SPI transactions
-   *
-   * Common code for SPI transactions including CSN toggle
-   *
-   */
-  inline void beginTransaction();
 
-  inline void endTransaction();
+  protected:
+    /**
+     * SPI transactions
+     *
+     * Common code for SPI transactions including CSN toggle
+     *
+     */
+    inline void beginTransaction();
 
-public:
+    inline void endTransaction();
+
+  public:
 
   /**
    * @name Primary public interface

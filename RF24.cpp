@@ -1,61 +1,57 @@
 /*
- Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
+ * Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
  */
 
 #include "nRF24L01.h"
 #include "RF24_config.h"
 #include "RF24.h"
 
-/****************************************************************************/
+/******************************************************************************/
 
-void RF24::csn(bool mode)
-{
-
-#if defined (RF24_TINY)
-	if (ce_pin != csn_pin) {
-		digitalWrite(csn_pin,mode);
-	} 
-	else {
-		if (mode == HIGH) {
-			PORTB |= (1<<PINB2);  	// SCK->CSN HIGH
-			delayMicroseconds(100); // allow csn to settle.
-		} 
-		else {
-			PORTB &= ~(1<<PINB2);	// SCK->CSN LOW
-			delayMicroseconds(11);  // allow csn to settle
-		}
+void RF24::csn(bool mode) {
+  #if defined (RF24_TINY)
+  if (ce_pin != csn_pin) {
+    digitalWrite(csn_pin,mode);
+	} else {
+    if (mode == HIGH) {
+      PORTB |= (1<<PINB2);    // SCK->CSN HIGH
+      delayMicroseconds(100); // allow CSN to settle.
+		} else {
+      PORTB &= ~(1<<PINB2);   // SCK->CSN LOW
+      delayMicroseconds(11);  // allow CSN to settle
+    }
 	}
 	// Return, CSN toggle complete
 	return;
-	
-#elif defined(ARDUINO) && !defined (RF24_SPI_TRANSACTIONS)
-	// Minimum ideal SPI bus speed is 2x data rate
-	// If we assume 2Mbs data rate and 16Mhz clock, a
-	// divider of 4 is the minimum we want.
-	// CLK:BUS 8Mhz:2Mhz, 16Mhz:4Mhz, or 20Mhz:5Mhz
-	
-      #if !defined (SOFTSPI)	
-		_SPI.setBitOrder(MSBFIRST);
-		_SPI.setDataMode(SPI_MODE0);
-		_SPI.setClockDivider(SPI_CLOCK_DIV2);
-      #endif
-#elif defined (RF24_RPi)
-      if(!mode)
-	    _SPI.chipSelect(csn_pin);
-#endif
 
-#if !defined (RF24_LINUX)
-	digitalWrite(csn_pin,mode);
-	delayMicroseconds(5);
-#endif
+  #elif defined(ARDUINO) && !defined (RF24_SPI_TRANSACTIONS)
+  // Minimum ideal SPI bus speed is 2x data rate
+  // If we assume 2Mbs data rate and 16Mhz clock, a
+  // divider of 4 is the minimum we want.
+  // CLK:BUS 8Mhz:2Mhz, 16Mhz:4Mhz, or 20Mhz:5Mhz
 
+  #if !defined (SOFTSPI)	
+  _SPI.setBitOrder(MSBFIRST);
+  _SPI.setDataMode(SPI_MODE0);
+  _SPI.setClockDivider(SPI_CLOCK_DIV2);
+  #endif
+  #elif defined (RF24_RPi)
+  if(!mode) {
+    _SPI.chipSelect(csn_pin);
+  }
+  #endif
+
+  #if !defined (RF24_LINUX)
+  digitalWrite(csn_pin,mode);
+  delayMicroseconds(5);
+  #endif
 }
 
-/****************************************************************************/
+/******************************************************************************/
 
 void RF24::ce(bool level)
 {
