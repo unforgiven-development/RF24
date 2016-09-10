@@ -22,3 +22,14 @@ utility/includes.h
 examples_linux/*
 !examples_linux/**/
 !examples_linux/*.*
+
+examples_linux/extra/rpi-hub
+examples_linux/extra/scanner
+examples_linux/interrupts/gettingstarted_call_response_int
+examples_linux/interrupts/gettingstarted_call_response_int2
+examples_linux/interrupts/pingpair_dyn_int
+examples_linux/interrupts/transfer_interrupt
+pyRF24/RF24.egg-info/
+pyRF24/__pycache__/
+pyRF24/crossunixccompiler.pyc
+pyRF24/dist/
