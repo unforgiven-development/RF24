@@ -22,6 +22,9 @@ Building options:
     --cpu-flags=<CFLAGS>        CPU defining/optimizing flags to be used. [configure autodetected]
     --extra-cflags=<CFLAGS>     Extra C flags passed to C/C++ compilation. []
     --extra-ldflags=<LDFLAGS>   Extra C flags passed to linking. []
+    --optimization-level=<OPT>  Selects an optimization level other than the default [fast], such as [2] or [3]
+                                (Do not specify the [-O] prefix, just the level.)
+    --enable-debug-build        Includes debug symbols in the compiled output.
     --libname=<LIBNAME>         Library name. [rf24]
     --c_compiler=<CC>           C compiler. [arm-linux-gnueabihf-gcc][gcc]
     --cxx_compiler=<CXX>        C++ compiler [arm-linux-gnueabihf-g++][g++]
@@ -151,7 +154,7 @@ function gcc_cpu_flags {
         flags="-march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard"
         ;;
     BCM2836)
-        flags="-march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard"
+        flags="-march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16 -pipe -fstack-protector --param=ssp-buffer-size=4"
         ;;
     AM33XX)
         flags="-march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard"
@@ -205,7 +208,7 @@ function gen_symlink_names {
     echo ${versions}
 }
 
-params="OS SOC DRIVER CPUFLAGS CFLAGS PREFIX REMOTE_PREFIX LIB LIBNAME LIB_VERSION LIBSYMLINKS LIBDEPRECATE CC CXX LIB_DIR REMOTE_LIB_DIR HEADER_DIR REMOTE_HEADER_DIR DRIVER_DIR ARCH_DIR REMOTE REMOTE_HOST REMOTE_USER REMOTE_PORT SHARED_LINKER_FLAGS LDCONFIG REMOTE_LDCONFIG EXAMPLES_DIR REMOTE_EXAMPLES_DIR"
+params="OS SOC DRIVER CPUFLAGS CFLAGS OPTLEVEL PREFIX REMOTE_PREFIX LIB LIBNAME LIB_VERSION LIBSYMLINKS LIBDEPRECATE CC CXX LIB_DIR REMOTE_LIB_DIR HEADER_DIR REMOTE_HEADER_DIR DRIVER_DIR ARCH_DIR REMOTE REMOTE_HOST REMOTE_USER REMOTE_PORT SHARED_LINKER_FLAGS LDCONFIG REMOTE_LDCONFIG EXAMPLES_DIR REMOTE_EXAMPLES_DIR"
 
 for opt do
     if [ "$opt" = "-h" ] || [ "$opt" = "--help" ]; then
@@ -229,6 +232,12 @@ for opt do
     --extra-ldflags=*)
         LDFLAGS="$optarg"
         ;;
+	--optimization-level=*)
+		OPTLEVEL="$optarg"
+		;;
+	--enable-debug-build*)
+		DEBUG_BUILD="1"
+		;;
     --libname=*)
         LIB="$optarg"
         ;;
@@ -367,6 +376,7 @@ LIB_DEPRECATE_VERSION=${LIB_DEPRECATE_VERSION:-""}
 CC=${CC:-gcc}
 CXX=${CXX:-g++}
 ARCH_DIR=${ARCH_DIR:-utility}
+OPTLEVEL=${OPTLEVEL:-fast}
 
 
 if [ -z "${SOC}" ]; then
@@ -435,6 +445,20 @@ DARWIN)
     ;;
 esac
 
+case ${OPTLEVEL} in
+	fast)
+		OPTLEVEL="-Ofast"
+		;;
+	2)
+		OPTLEVEL="-O2"
+		;;
+	3)
+		OPTLEVEL="-O3"
+		;;
+	*)
+		die "Unsupported optimization level: ${OPTLEVEL} (as CFLAG: -O${OPTLEVEL})" 5
+		;;
+esac
 
 LIBNAME=${LIBNAME:-lib${LIB}.${DYN_SUFFIX}.${LIB_VERSION}}
 LIBSYMLINKS="${LIBSYMLINKS:-$(gen_symlink_names lib${LIB}.${DYN_SUFFIX} ${LIB_VERSION})}"
@@ -445,7 +469,11 @@ if [ "${LIB_DEPRECATE_NAME}" ]; then
     fi
 fi
 DRIVER_DIR=${DRIVER_DIR:-${ARCH_DIR}/${DRIVER}}
-CFLAGS="$CPUFLAGS -Ofast -Wall -pthread $CFLAGS"
+
+CFLAGS="$CPUFLAGS $OPTLEVEL -Wall -pthread $CFLAGS"
+if [ "${DEBUG_BUILD}" ]; then
+	CFLAGS="$CFLAGS -g -fvar-tracking-assignments"
+fi
 
 echo "[SECTION] Preparing configuration."
 cp ${DRIVER_DIR}/includes.h ${ARCH_DIR}/includes.h
