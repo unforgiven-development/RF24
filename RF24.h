@@ -876,7 +876,7 @@ s   *
   /**
    * Get the CRC length
    * <br>CRC checking cannot be disabled if auto-ack is enabled
-   * @return RF24_DISABLED if disabled or RF24_CRC_8 for 8-bit or RF24_CRC_16 for 16-bit
+   * @return RF24_CRC_DISABLED if disabled or RF24_CRC_8 for 8-bit or RF24_CRC_16 for 16-bit
    */
   rf24_crclength_e getCRCLength(void);
 
@@ -1343,6 +1343,7 @@ private:
  * @li <a href="https://github.com/TMRh20/RF24/archive/master.zip"><b>Download</b></a>
  * @li <a href="https://github.com/tmrh20/RF24/"><b>Source Code</b></a>
  * @li <a href="http://tmrh20.blogspot.com/2014/03/high-speed-data-transfers-and-wireless.html"><b>My Blog:</b> RF24 Optimization Overview</a> 
+ * @li <a href="http://tmrh20.blogspot.com/2016/08/raspberry-pilinux-with-nrf24l01.html"><b>My Blog:</b> RPi/Linux w/RF24Gateway</a> 
  * @li <a href="http://www.nordicsemi.com/files/Product/data_sheet/nRF24L01_Product_Specification_v2_0.pdf">Chip Datasheet</a>
  *
  * **Additional Information and Add-ons**
