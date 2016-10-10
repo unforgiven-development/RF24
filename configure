@@ -151,7 +151,7 @@ function gcc_cpu_flags {
     local soc=$1
     case $soc in
     BCM2835)
-        flags="-march=armv6zk -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard"
+        flags="-march=armv6zk -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -pipe -fstack-protector --param=ssp-buffer-size=4"
         ;;
     BCM2836)
         flags="-march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16 -pipe -fstack-protector --param=ssp-buffer-size=4"
@@ -472,7 +472,17 @@ DRIVER_DIR=${DRIVER_DIR:-${ARCH_DIR}/${DRIVER}}
 
 CFLAGS="$CPUFLAGS $OPTLEVEL -Wall -pthread $CFLAGS"
 if [ "${DEBUG_BUILD}" ]; then
-	CFLAGS="$CFLAGS -g -fvar-tracking-assignments"
+	case ${CC} in
+		clang*)
+			CFLAGS="${CFLAGS} -g"
+			;;
+		gcc*)
+			CFLAGS="${CFLAGS} -g -fvar-tracking-assignments"
+			;;
+		*)
+			CFLAGS="${CFLAGS} -g"
+			;;
+	esac
 fi
 
 echo "[SECTION] Preparing configuration."
