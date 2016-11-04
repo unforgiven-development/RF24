@@ -10,6 +10,7 @@ Options:
 
 Help:
     -h, --help                  print this message
+    --help-advanced             print advanced help for configuration
 
 Driver options:
     --driver=[SPIDEV|MRAA|RPi|LittleWire]
@@ -32,6 +33,7 @@ Installation options:
     --lib-dir=<DIR>             Library target installation directory. [PREFIX/lib]
     --header-dir=<DIR>          Header files target installation directory. [PREFIX/include]
     --examples-dir=<DIR>        Example files installation directory. [PREFIX/bin]
+    --config-dir=<DIR>          Target directory for runtime configuration files. [PREFIX/etc]
     --ldconfig=<LDCONFIG>       Ldconfig binary. Can be set to '' to skip ldconfig step. [ldconfig]
 
 Cross-compilation options:
@@ -47,6 +49,15 @@ Cross-compilation options:
 
 EOF
 }
+
+function help_advanced {
+cat <<EOF
+advanced configuration options for RF24 library.
+Options:
+
+EOF
+}
+
 
 function execute_check {
     if [ "${REMOTE}" ]; then
