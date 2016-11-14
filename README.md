@@ -24,4 +24,17 @@ Additional platforms, which have at least _some degree_ of support, include the 
 - [Teensy](http://www.pjrc.com/teensy/)
 - Various other Linux-based embedded devices via **SPIDEV**
 
-**See http://tmrh20.github.io/RF24 for all documentation**
+
+## Documentation ##
+As the state of the cleanup project is not mature enough to generate documentation, please
+refer to the documentation produced by _TMRh20_; this entire project has been forked from
+his fork of the RF24 libraries.
+
+- [Documentation Index][1]
+- [RF24 Documentation][2]
+- [Upstream Repository][3]
+
+
+[1]: <http://tmrh20.github.io>
+[2]: <http://tmrh20.github.io/RF24>
+[3]: <https://github.com/TMRh20/RF24>
