@@ -1,26 +1,32 @@
 /*
- Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
-
- 03/17/2013 : Charles-Henri Hallard (http://hallard.me)
-              Modified to use with Arduipi board http://hallard.me/arduipi
-						  Changed to use modified bcm2835 and RF24 library
-TMRh20 2014 - Updated to work with optimized RF24 Arduino library
-
+ * Copyright (C) 2011 J. Coliz <maniacbug@ymail.com>
+ * Copyright (C) 2016 Gerad Munsch <gmunsch@unforgivendevelopment.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ *  03/17/2013 : Charles-Henri Hallard (http://hallard.me)
+ *               Modified to use with Arduipi board http://hallard.me/arduipi
+ *               Changed to use modified bcm2835 and RF24 library
+ * TMRh20 2014 - Updated to work with optimized RF24 Arduino library
+ * (starting) 10/23/2016 -- Gerad Munsch <gmunsch@unforgivendevelopment.com>
+ *             - Started cleaning up this file
+ *
  */
 
 /**
- * Example RF Radio Ping Pair
+ * Linux Example: RF Radio Ping Pair
  *
- * This is an example of how to use the RF24 class on RPi, communicating to an Arduino running
- * the GettingStarted sketch.
+ * This is an example of how to use the RF24 class on the Raspberry Pi (or other
+ * compatible Linux devices), demonstrating communication to an Arduino (or even
+ * another compatible Linux device), which is also running the GettingStarted 
+ * sketch/program.
  */
 
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <unistd.h>
