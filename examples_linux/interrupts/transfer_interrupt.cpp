@@ -1,17 +1,23 @@
-/*
-TMRh20 2014
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- version 2 as published by the Free Software Foundation.
+/**
+ * ---------------------------------------------------------------------------------------------------------------------
+ * \file	transfer_interrupt.cpp	General Data Transfer Rate Test
+ *									This example demonstrates basic data transfer functionality with the updated
+ *									library. This example will display the transfer rates acheived using the slower form
+ *									of high-speed transfer using blocking-writes.
+ *
+ * ---------------------------------------------------------------------------------------------------------------------
+ * \date	2014-2017
+ * \author	Gerad Munsch <gmunsch@unforgivendevelopment.com>
+ * \author	TMRh20
+ *
+ * ---------------------------------------------------------------------------------------------------------------------
+ * \copyright	This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ *				General Public License version 2 as published by the Free Software Foundation.
+ *
+ * ---------------------------------------------------------------------------------------------------------------------
  */
 
-/** General Data Transfer Rate Test
- * This example demonstrates basic data transfer functionality with the
- updated library. This example will display the transfer rates acheived using
- the slower form of high-speed transfer using blocking-writes.
- */
-
+/* -----[ INCLUDES ]----- */
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -19,7 +25,10 @@ TMRh20 2014
 #include <RF24/RF24.h>
 #include <unistd.h>
 
+
 using namespace std;
+
+
 //
 // Hardware configuration
 //
@@ -59,8 +68,8 @@ RF24 radio(RPI_V2_GPIO_P1_15, RPI_V2_GPIO_P1_24, BCM2835_SPI_SPEED_8MHZ);
 //RF24 radio(115,0);
 
 //BBB Alternate, with mraa
-// CE pin = (Header P9, Pin 13) = 59 = 13 + 46 
-//Note: Specify SPI BUS 0 or 1 instead of CS pin number. 
+// CE pin = (Header P9, Pin 13) = 59 = 13 + 46
+//Note: Specify SPI BUS 0 or 1 instead of CS pin number.
 //RF24 radio(59,0);
 
 /**************************************************************/
@@ -72,8 +81,7 @@ const uint64_t addresses[2] = { 0xABCDABCD71LL, 0x544d52687CLL };
 uint8_t data[32];
 unsigned long startTime, stopTime, counter, rxTimer=0;
 
-void intHandler()
-{
+void intHandler() {
 	//Read as long data is available
 	//Single interrupts may be lost if a lot of data comes in.
 	while(radio.available())
@@ -143,21 +151,21 @@ int main(int argc, char** argv){
 		printf("Initiating Basic Data Transfer\n\r");
 
 		long int cycles = 10000; 					//Change this to a higher or lower number.
-		
+
 		// unsigned long pauseTime = millis();		//Uncomment if autoAck == 1 ( NOACK )
 		startTime = millis();
-	
+
 		for(int i=0; i<cycles; i++){        		//Loop through a number of cycles
       			data[0] = i;                        //Change the first byte of the payload for identification
       			if(!radio.writeFast(&data,32)){     //Write to the FIFO buffers
         			counter++;                      //Keep count of failed payloads
       			}
 
-				
+
 				//This is only required when NO ACK ( enableAutoAck(0) ) payloads are used
 		/*		if(millis() - pauseTime > 3){       // Need to drop out of TX mode every 4ms if sending a steady stream of multicast data
-					pauseTime = millis();		    
-					radio.txStandBy();				// This gives the PLL time to sync back up	
+					pauseTime = millis();
+					radio.txStandBy();				// This gives the PLL time to sync back up
 				}
 		*/
 		}
@@ -187,6 +195,6 @@ int main(int argc, char** argv){
         }
         delay(2);
 	}
-	
+
 } // loop
 } // main
