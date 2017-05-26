@@ -9,59 +9,48 @@ configure script for RF24 library.
 Options:
 
 Help:
-<<<<<<< HEAD
-	-h, --help                  print this message
-=======
     -h, --help                  print this message
     --help-advanced             print advanced help for configuration
->>>>>>> github/master
 
 Driver options:
-	--driver=[SPIDEV|MRAA|RPi|LittleWire]
-								Driver for RF24 library. [configure autodetected]
+    --driver=[SPIDEV|MRAA|RPi|LittleWire]
+                                Driver for RF24 library. [configure autodetected]
 
 Building options:
-	--os=[LINUX|DARWIN]         Operating system. [configure autodetected]
-	--soc=[BCM2835|BCM2836|AM33XX|A10|A13|A20|H3]
-								SoC type to be used. [configure autodetected]
-	--cpu-flags=<CPUFLAGS>      CPU defining/optimizing flags to be used. [configure autodetected]
-	--extra-cflags=<CFLAGS>     Extra C flags passed to C compiler. []
-	--extra-cxxflags=<CXXFLAGS> Extra C++ flags passed to the C++ compiler. []
-	--extra-ldflags=<LDFLAGS>   Extra linker flags ("LDFLAGS") passed to linker. []
-	--optimization-level=<OPT>  Selects an optimization level other than the default [fast], such as [2] or [3]
-								(Do not specify the [-O] prefix, just the level.)
-	--enable-debug-build        Includes debug symbols in the compiled output.
-	--libname=<LIBNAME>         Library name. [rf24]
-	--c_compiler=<CC>           C compiler. [arm-linux-gnueabihf-gcc][gcc]
-	--cxx_compiler=<CXX>        C++ compiler [arm-linux-gnueabihf-g++][g++]
-	--no-clean                  Don't clean previous build artifacts
+    --os=[LINUX|DARWIN]         Operating system. [configure autodetected]
+    --soc=[BCM2835|BCM2836|AM33XX|A10|A13|A20|H3]
+                                SoC type to be used. [configure autodetected]
+    --cpu-flags=<CPUFLAGS>      CPU defining/optimizing flags to be used. [configure autodetected]
+    --extra-cflags=<CFLAGS>     Extra C flags passed to C compiler. []
+    --extra-cxxflags=<CXXFLAGS> Extra C++ flags passed to the C++ compiler. []
+    --extra-ldflags=<LDFLAGS>   Extra linker flags ("LDFLAGS") passed to linker. []
+    --optimization-level=<OPT>  Selects an optimization level other than the default [fast], such as [2] or [3]
+                                (Do not specify the [-O] prefix, just the level.)
+    --enable-debug-build        Includes debug symbols in the compiled output.
+    --libname=<LIBNAME>         Library name. [rf24]
+    --c_compiler=<CC>           C compiler. [arm-linux-gnueabihf-gcc][gcc]
+    --cxx_compiler=<CXX>        C++ compiler [arm-linux-gnueabihf-g++][g++]
+    --no-clean                  Don't clean previous build artifacts
 
 Installation options:
-<<<<<<< HEAD
-	--prefix=<PREFIX>           Installation prefix path. [/usr/local]
-	--lib-dir=<DIR>             Library target installation directory. [PREFIX/lib]
-	--header-dir=<DIR>          Header files target installation directory. [PREFIX/include]
-	--examples-dir=<DIR>        Example files installation directory. [PREFIX/bin]
-	--ldconfig=<LDCONFIG>       Ldconfig binary. Can be set to '' to skip ldconfig step. [ldconfig]
-=======
     --prefix=<PREFIX>           Installation prefix path. [/usr/local]
     --lib-dir=<DIR>             Library target installation directory. [PREFIX/lib]
     --header-dir=<DIR>          Header files target installation directory. [PREFIX/include]
     --examples-dir=<DIR>        Example files installation directory. [PREFIX/bin]
     --config-dir=<DIR>          Target directory for runtime configuration files. [PREFIX/etc]
     --ldconfig=<LDCONFIG>       Ldconfig binary. Can be set to '' to skip ldconfig step. [ldconfig]
->>>>>>> github/master
+
 
 Cross-compilation options:
-	--remote-host=<REMOTE_HOST> Remote hostname for installation.
-	--remote-user=<REMOTE_USER> Remote username for installation. [current user]
-	--remote-port=<REMOTE_PORT> Ssh port of remote machine. [22]
-	--remote=<USER@HOST>        Remote ssh host identification for installation [REMOTE_USER@REMOTE_HOST]
-	--remote-prefix=<RPREFIX>   Remote host installation prefix path. [/usr/local]
-	--remote-lib-dir=<DIR>      Remote library target installation directory [RPREFIX/lib]
-	--remote-header-dir=<DIR>   Remote header files target installation directory. [RPREFIX/include]
-	--remote-ldconfig=<RLDCON>  Remote ldconfig binary filename. Can be set to '' to skip ldconfig call. [ldconfig]
-	--remote-examples-dir=<DIR> Example files remote installation directory. Default: [REMOTE_PREFIX/bin]
+    --remote-host=<REMOTE_HOST> Remote hostname for installation.
+    --remote-user=<REMOTE_USER> Remote username for installation. [current user]
+    --remote-port=<REMOTE_PORT> Ssh port of remote machine. [22]
+    --remote=<USER@HOST>        Remote ssh host identification for installation [REMOTE_USER@REMOTE_HOST]
+    --remote-prefix=<RPREFIX>   Remote host installation prefix path. [/usr/local]
+    --remote-lib-dir=<DIR>      Remote library target installation directory [RPREFIX/lib]
+    --remote-header-dir=<DIR>   Remote header files target installation directory. [RPREFIX/include]
+    --remote-ldconfig=<RLDCON>  Remote ldconfig binary filename. Can be set to '' to skip ldconfig call. [ldconfig]
+    --remote-examples-dir=<DIR> Example files remote installation directory. Default: [REMOTE_PREFIX/bin]
 
 EOF
 }
