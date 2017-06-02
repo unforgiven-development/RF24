@@ -22,106 +22,83 @@
 #include "RF24.h"
 #include "printf.h"
 
-//
-// Hardware configuration
-//
+/* ---( HARDWARE CONFIGURATION )--- */
 
-// Set up nRF24L01 radio on SPI bus plus pins 7 & 8
+/* Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
+RF24 radio(7, 8);
 
-RF24 radio(7,8);
 
-//
-// Channel info
-//
+/* ---( CONSTANTS & PROJECT SETTINGS )--- */
 
-const uint8_t num_channels = 126;
-uint8_t values[num_channels];
+const uint8_t num_channels = 126;		/*!< Defines the amount of channels available for use on nRF24L01(+) hardware */
+uint8_t values[num_channels];			/*!< An array to hold the reading values, one for each channel */
+const int num_reps = 100;				/*!< The amount of times to scan each channel */
 
-//
-// Setup
-//
 
-void setup(void)
-{
-  //
-  // Print preamble
-  //
+void setup(void) {
+	int h = 0;
 
-  Serial.begin(115200);
-  printf_begin();
-  Serial.println(F("\n\rRF24/examples/scanner/"));
+	/* Print our "preamble" */
+	Serial.begin(115200);
+	printf_begin();
+	Serial.println(F("\n\rRF24/examples/scanner/"));
 
-  //
-  // Setup and configure rf radio
-  //
+	/* Start radio operation, and set runtime configuration options */
+	radio.begin();
+	radio.setAutoAck(false);
 
-  radio.begin();
-  radio.setAutoAck(false);
+	// Get into standby mode
+	radio.startListening();
+	radio.stopListening();
 
-  // Get into standby mode
-  radio.startListening();
-  radio.stopListening();
+	radio.printDetails();
 
-  radio.printDetails();
+	/* Print out header, high then low digit */
+	h = 0;
+	while (h < num_channels) {
+		printf("%x", h >> 4);
+		++h;
+	}
+	Serial.println();
 
-  // Print out header, high then low digit
-  int i = 0;
-  while ( i < num_channels )
-  {
-    printf("%x",i>>4);
-    ++i;
-  }
-  Serial.println();
-  i = 0;
-  while ( i < num_channels )
-  {
-    printf("%x",i&0xf);
-    ++i;
-  }
-  Serial.println();
+	h = 0;
+	while (h < num_channels) {
+		printf("%x", h & 0x0F);
+		++h;
+	}
+	Serial.println();
 }
 
-//
-// Loop
-//
 
-const int num_reps = 100;
+void loop(void) {
+	// Clear measurement values
+	memset(values, 0, sizeof(values));
 
-void loop(void)
-{
-  // Clear measurement values
-  memset(values,0,sizeof(values));
+	// Scan each channels "num_reps" times
+	int rep_counter = num_reps;
+	while (rep_counter--) {
+		int n = num_channels;
+		while (n--) {
+			// Select this channel
+			radio.setChannel(n);
 
-  // Scan all channels num_reps times
-  int rep_counter = num_reps;
-  while (rep_counter--)
-  {
-    int i = num_channels;
-    while (i--)
-    {
-      // Select this channel
-      radio.setChannel(i);
+			// Listen for a little
+			radio.startListening();
+			delayMicroseconds(128);
+			radio.stopListening();
 
-      // Listen for a little
-      radio.startListening();
-      delayMicroseconds(128);
-      radio.stopListening();
+			// Did we get a carrier?
+			if (radio.testCarrier()) {
+				++values[n];
+			}
+		}
+	}
 
-      // Did we get a carrier?
-      if ( radio.testCarrier() ){
-        ++values[i];
-      }
-    }
-  }
-
-  // Print out channel measurements, clamped to a single hex digit
-  int i = 0;
-  while ( i < num_channels )
-  {
-    printf("%x",min(0xf,values[i]));
-    ++i;
-  }
-  Serial.println();
+	// Print out channel measurements, clamped to a single hex digit
+	int i = 0;
+	while (i < num_channels) {
+		printf("%x", min(0x0F, values[i]));
+		++i;
+	}
+	Serial.println();
 }
-
-// vim:ai:cin:sts=2 sw=2 ft=cpp
