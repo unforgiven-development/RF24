@@ -466,16 +466,14 @@ uint8_t RF24::getChannel()
 }
 /****************************************************************************/
 
-void RF24::setPayloadSize(uint8_t size)
-{
-  payload_size = rf24_min(size,32);
+void RF24::setPayloadSize(uint8_t size) {
+	payload_size = rf24_min(size, 32);
 }
 
 /****************************************************************************/
 
-uint8_t RF24::getPayloadSize(void)
-{
-  return payload_size;
+uint8_t RF24::getPayloadSize(void) {
+	return payload_size;
 }
 
 /****************************************************************************/
@@ -485,34 +483,37 @@ uint8_t RF24::getPayloadSize(void)
 static const char rf24_datarate_e_str_0[] PROGMEM = "1MBPS";
 static const char rf24_datarate_e_str_1[] PROGMEM = "2MBPS";
 static const char rf24_datarate_e_str_2[] PROGMEM = "250KBPS";
-static const char * const rf24_datarate_e_str_P[] PROGMEM = {
-  rf24_datarate_e_str_0,
-  rf24_datarate_e_str_1,
-  rf24_datarate_e_str_2,
+static const char *const rf24_datarate_e_str_P[] PROGMEM = {
+	rf24_datarate_e_str_0,
+	rf24_datarate_e_str_1,
+	rf24_datarate_e_str_2
 };
+
 static const char rf24_model_e_str_0[] PROGMEM = "nRF24L01";
 static const char rf24_model_e_str_1[] PROGMEM = "nRF24L01+";
-static const char * const rf24_model_e_str_P[] PROGMEM = {
-  rf24_model_e_str_0,
-  rf24_model_e_str_1,
+static const char *const rf24_model_e_str_P[] PROGMEM = {
+	rf24_model_e_str_0,
+	rf24_model_e_str_1
 };
+
 static const char rf24_crclength_e_str_0[] PROGMEM = "Disabled";
 static const char rf24_crclength_e_str_1[] PROGMEM = "8 bits";
 static const char rf24_crclength_e_str_2[] PROGMEM = "16 bits" ;
-static const char * const rf24_crclength_e_str_P[] PROGMEM = {
-  rf24_crclength_e_str_0,
-  rf24_crclength_e_str_1,
-  rf24_crclength_e_str_2,
+static const char *const rf24_crclength_e_str_P[] PROGMEM = {
+	rf24_crclength_e_str_0,
+	rf24_crclength_e_str_1,
+	rf24_crclength_e_str_2
 };
+
 static const char rf24_pa_dbm_e_str_0[] PROGMEM = "PA_MIN";
 static const char rf24_pa_dbm_e_str_1[] PROGMEM = "PA_LOW";
 static const char rf24_pa_dbm_e_str_2[] PROGMEM = "PA_HIGH";
 static const char rf24_pa_dbm_e_str_3[] PROGMEM = "PA_MAX";
-static const char * const rf24_pa_dbm_e_str_P[] PROGMEM = {
-  rf24_pa_dbm_e_str_0,
-  rf24_pa_dbm_e_str_1,
-  rf24_pa_dbm_e_str_2,
-  rf24_pa_dbm_e_str_3,
+static const char *const rf24_pa_dbm_e_str_P[] PROGMEM = {
+	rf24_pa_dbm_e_str_0,
+	rf24_pa_dbm_e_str_1,
+	rf24_pa_dbm_e_str_2,
+	rf24_pa_dbm_e_str_3
 };
 
 #if defined (RF24_LINUX)
@@ -521,85 +522,111 @@ static const char rf24_csn_e_str_1[] = "CE1 (PI Hardware Driven)";
 static const char rf24_csn_e_str_2[] = "CE2 (PI Hardware Driven)";
 static const char rf24_csn_e_str_3[] = "Custom GPIO Software Driven";
 static const char * const rf24_csn_e_str_P[] = {
-  rf24_csn_e_str_0,
-  rf24_csn_e_str_1,
-  rf24_csn_e_str_2,
-  rf24_csn_e_str_3,
+	rf24_csn_e_str_0,
+	rf24_csn_e_str_1,
+	rf24_csn_e_str_2,
+	rf24_csn_e_str_3
 };
 #endif
 
-void RF24::printDetails(void)
-{
+void RF24::printDetails(void)  {
 
 #if defined (RF24_RPi)
-  printf("================ SPI Configuration ================\n" );
-  if (csn_pin < BCM2835_SPI_CS_NONE ){
-    printf("CSN Pin  \t = %s\n",rf24_csn_e_str_P[csn_pin]);
-  }else{
-    printf("CSN Pin  \t = Custom GPIO%d%s\n", csn_pin,
-    csn_pin==RPI_V2_GPIO_P1_26 ? " (CE1) Software Driven" : "" );
-  }
-  printf("CE Pin  \t = Custom GPIO%d\n", ce_pin );
-  printf("Clock Speed\t = " );
-	switch (spi_speed)
-	{
-		case BCM2835_SPI_SPEED_64MHZ : printf("64 Mhz");	break ;
-		case BCM2835_SPI_SPEED_32MHZ : printf("32 Mhz");	break ;
-		case BCM2835_SPI_SPEED_16MHZ : printf("16 Mhz");	break ;
-		case BCM2835_SPI_SPEED_8MHZ  : printf("8 Mhz");	break ;
-		case BCM2835_SPI_SPEED_4MHZ  : printf("4 Mhz");	break ;
-		case BCM2835_SPI_SPEED_2MHZ  : printf("2 Mhz");	break ;
-		case BCM2835_SPI_SPEED_1MHZ  : printf("1 Mhz");	break ;
-		case BCM2835_SPI_SPEED_512KHZ: printf("512 KHz");	break ;
-		case BCM2835_SPI_SPEED_256KHZ: printf("256 KHz");	break ;
-		case BCM2835_SPI_SPEED_128KHZ: printf("128 KHz");	break ;
-		case BCM2835_SPI_SPEED_64KHZ : printf("64 KHz");	break ;
-		case BCM2835_SPI_SPEED_32KHZ : printf("32 KHz");	break ;
-		case BCM2835_SPI_SPEED_16KHZ : printf("16 KHz");	break ;
-		case BCM2835_SPI_SPEED_8KHZ  : printf("8 KHz");	break ;
-		default : printf("8 Mhz");	break ;
+	printf("================ SPI Configuration ================\n" );
+	if (csn_pin < BCM2835_SPI_CS_NONE) {
+		printf("CSN Pin  \t = %s\n", rf24_csn_e_str_P[csn_pin]);
+	} else {
+		printf("CSN Pin  \t = Custom GPIO%d%s\n", csn_pin, csn_pin == RPI_V2_GPIO_P1_26 ? " (CE1) Software Driven" : "" );
+	}
+	printf("CE Pin  \t = Custom GPIO%d\n", ce_pin);
+	printf("Clock Speed\t = ");
+	switch (spi_speed) {
+		case BCM2835_SPI_SPEED_64MHZ:
+			printf("64 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_32MHZ:
+			printf("32 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_16MHZ:
+			printf("16 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_8MHZ:
+			printf("8 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_4MHZ:
+			printf("4 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_2MHZ:
+			printf("2 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_1MHZ:
+			printf("1 Mhz");
+			break;
+		case BCM2835_SPI_SPEED_512KHZ:
+			printf("512 KHz");
+			break;
+		case BCM2835_SPI_SPEED_256KHZ:
+			printf("256 KHz");
+			break;
+		case BCM2835_SPI_SPEED_128KHZ:
+			printf("128 KHz");
+			break;
+		case BCM2835_SPI_SPEED_64KHZ:
+			printf("64 KHz");
+			break;
+		case BCM2835_SPI_SPEED_32KHZ:
+			printf("32 KHz");
+			break;
+		case BCM2835_SPI_SPEED_16KHZ:
+			printf("16 KHz");
+			break;
+		case BCM2835_SPI_SPEED_8KHZ:
+			printf("8 kHz");
+			break;
+		default:
+			printf("8 MHz");
+			break;
 	}
 	printf("\n================ NRF Configuration ================\n");
 
 #endif //Linux
 
-  print_status(get_status());
+	print_status(get_status());
 
-  print_address_register(PSTR("RX_ADDR_P0-1"),RX_ADDR_P0,2);
-  print_byte_register(PSTR("RX_ADDR_P2-5"),RX_ADDR_P2,4);
-  print_address_register(PSTR("TX_ADDR\t"),TX_ADDR);
+	print_address_register(PSTR("RX_ADDR_P0-1"), RX_ADDR_P0, 2);
+	print_byte_register(PSTR("RX_ADDR_P2-5"), RX_ADDR_P2, 4);
+	print_address_register(PSTR("TX_ADDR\t"), TX_ADDR);
 
-  print_byte_register(PSTR("RX_PW_P0-6"),RX_PW_P0,6);
-  print_byte_register(PSTR("EN_AA\t"),EN_AA);
-  print_byte_register(PSTR("EN_RXADDR"),EN_RXADDR);
-  print_byte_register(PSTR("RF_CH\t"),RF_CH);
-  print_byte_register(PSTR("RF_SETUP"),RF_SETUP);
-  print_byte_register(PSTR("CONFIG\t"),NRF_CONFIG);
-  print_byte_register(PSTR("DYNPD/FEATURE"),DYNPD,2);
+	print_byte_register(PSTR("RX_PW_P0-6"), RX_PW_P0, 6);
+	print_byte_register(PSTR("EN_AA\t"), EN_AA);
+	print_byte_register(PSTR("EN_RXADDR"), EN_RXADDR);
+	print_byte_register(PSTR("RF_CH\t"), RF_CH);
+	print_byte_register(PSTR("RF_SETUP"), RF_SETUP);
+	print_byte_register(PSTR("CONFIG\t"), NRF_CONFIG);
+	print_byte_register(PSTR("DYNPD/FEATURE"), DYNPD, 2);
 
-  printf_P(PSTR("Data Rate\t = " PRIPSTR "\r\n"),pgm_read_word(&rf24_datarate_e_str_P[getDataRate()]));
-  printf_P(PSTR("Model\t\t = " PRIPSTR "\r\n"),pgm_read_word(&rf24_model_e_str_P[isPVariant()]));
-  printf_P(PSTR("CRC Length\t = " PRIPSTR "\r\n"),pgm_read_word(&rf24_crclength_e_str_P[getCRCLength()]));
-  printf_P(PSTR("PA Power\t = " PRIPSTR "\r\n"),  pgm_read_word(&rf24_pa_dbm_e_str_P[getPALevel()]));
+	printf_P(PSTR("Data Rate\t = "  PRIPSTR "\r\n"), pgm_read_word(&rf24_datarate_e_str_P[getDataRate()]));
+	printf_P(PSTR("Model\t\t = "    PRIPSTR "\r\n"), pgm_read_word(&rf24_model_e_str_P[isPVariant()]));
+	printf_P(PSTR("CRC Length\t = " PRIPSTR "\r\n"), pgm_read_word(&rf24_crclength_e_str_P[getCRCLength()]));
+	printf_P(PSTR("PA Power\t = "   PRIPSTR "\r\n"), pgm_read_word(&rf24_pa_dbm_e_str_P[getPALevel()]));
 
 }
 
 #endif
 /****************************************************************************/
 
-bool RF24::begin(void)
-{
+bool RF24::begin(void) {
 
-  uint8_t setup=0;
+	uint8_t setup = 0;
 
-  #if defined (RF24_LINUX)
+#if defined (RF24_LINUX)
 
-	#if defined (MRAA)
-	  GPIO();
-	  gpio.begin(ce_pin,csn_pin);
-	#endif
+#if defined (MRAA)
+	GPIO();
+	gpio.begin(ce_pin, csn_pin);
+#endif
 
-    #ifdef RF24_RPi
+#ifdef RF24_RPi
 	  switch(csn_pin){     //Ensure valid hardware CS pin
 	    case 0: break;
 	    case 1: break;
@@ -608,7 +635,7 @@ bool RF24::begin(void)
 	    case 7: csn_pin = 1; break;
 	    default: csn_pin = 0; break;
 	  }
-    #endif
+#endif
 
     _SPI.begin(csn_pin);
 
@@ -617,7 +644,7 @@ bool RF24::begin(void)
 
 	delay(100);
 
-  #elif defined(LITTLEWIRE)
+#elif defined(LITTLEWIRE)
     pinMode(csn_pin,OUTPUT);
     _SPI.begin();
     csn(HIGH);
@@ -1577,7 +1604,7 @@ rf24_crclength_e RF24::getCRCLength(void)
 
 /****************************************************************************/
 
-void RF24::disableCRC( void )
+void RF24::disableCRC(void )
 {
   uint8_t disable = read_register(NRF_CONFIG) & ~_BV(EN_CRC) ;
   write_register( NRF_CONFIG, disable ) ;

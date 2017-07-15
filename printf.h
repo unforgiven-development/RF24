@@ -17,8 +17,8 @@
  * enables 'printf'
  */
 
-#ifndef __PRINTF_H__
-#define __PRINTF_H__
+#ifndef _PRINTF_H__
+#define _PRINTF_H__
 
 #if defined (ARDUINO) && !defined (__arm__) && !defined(__ARDUINO_X86__)
 
