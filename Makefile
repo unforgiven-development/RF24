@@ -1,15 +1,16 @@
-#############################################################################
+########################################################################################################################
 #
 # Makefile for librf24
 #
 # License: GPL (General Public License)
-# Author:  Charles-Henri Hallard 
-# Date:    2013/03/13 
+# Author:  Charles-Henri Hallard
+# Date:    2013/03/13
 #
 # Description:
 # ------------
-# use make all and make install to install the library 
+# use make all and make install to install the library
 #
+########################################################################################################################
 
 CONFIG_FILE=Makefile.inc
 REMOTE_ERROR="[ERROR] Remote machine not configured. Run configure with respective arguments."
@@ -26,17 +27,19 @@ else ifeq ($(DRIVER), SPIDEV)
 OBJECTS+=spi.o gpio.o compatibility.o interrupt.o
 endif
 
-# make all
-# reinstall the library after each recompilation
+## make all
+## reinstall the library after each recompilation
 all: $(LIBNAME)
 
-# Make the library
+
+## Make the library
 $(LIBNAME): $(OBJECTS)
 	@echo "[Linking]"
 	$(CC) $(SHARED_LINKER_FLAGS) $(CFLAGS) -o $(LIBNAME) $^
 
-# Library parts
-RF24.o: RF24.cpp	
+
+## Library parts
+RF24.o: RF24.cpp
 	$(CXX) -fPIC $(CFLAGS) -c $^
 
 bcm2835.o: $(DRIVER_DIR)/bcm2835.c
@@ -53,13 +56,15 @@ gpio.o: $(DRIVER_DIR)/gpio.cpp
 
 interrupt.o: $(DRIVER_DIR)/interrupt.c
 	$(CXX) -fPIC $(CFLAGS) -c $(DRIVER_DIR)/interrupt.c
-	
-# clear configuration files
+
+
+## clear configuration files
 cleanconfig:
 	@echo "[Cleaning configuration]"
 	rm -rf $(CONFIG_FILE) utility/includes.h
 
-# clear build files
+
+## clear build files
 clean:
 	@echo "[Cleaning]"
 	rm -rf *.o $(LIBNAME)
@@ -71,7 +76,8 @@ $(CONFIG_FILE):
 install: all install-libs install-headers
 upload: all upload-libs upload-headers
 
-# Install the library to LIBPATH
+
+## Install the library to LIBPATH
 install-libs:
 	@echo "[Installing Libs to $(LIB_DIR)]"
 	@if ( test ! -d $(LIB_DIR) ); then mkdir -p $(LIB_DIR); fi

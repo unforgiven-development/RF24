@@ -28,14 +28,14 @@ clean:
 	@echo "[Cleaning]"
 	rm -rf $(PROGRAMS)
 
-install: all
+install:
 	@echo "[Installing examples to $(EXAMPLES_DIR)]"
 	@mkdir -p $(EXAMPLES_DIR)
 	@for prog in $(PROGRAMS); do \
 		install -m 0755 $${prog} $(EXAMPLES_DIR)/$(BINARY_PREFIX)-$${prog}; \
 	done
 
-upload: all
+upload:
 	@echo "[Uploading examples to $(REMOTE):$(REMOTE_EXAMPLES_DIR)]"
 ifeq ($(REMOTE),)
 	@echo "[ERROR] Remote machine not configured. Run configure with respective arguments."

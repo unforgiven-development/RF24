@@ -6,7 +6,7 @@
  modify it under the terms of the GNU General Public License
  version 2 as published by the Free Software Foundation.
  */
- 
+
  /* spaniakos <spaniakos@gmail.com>
   Added __ARDUINO_X86__ support
 */
@@ -14,13 +14,13 @@
 #ifndef __RF24_CONFIG_H__
 #define __RF24_CONFIG_H__
 
-  /*** USER DEFINES:  ***/  
+  /*** USER DEFINES:  ***/
   //#define FAILURE_HANDLING
   //#define SERIAL_DEBUG
   //#define MINIMAL
   //#define SPI_UART  // Requires library from https://github.com/TMRh20/Sketches/tree/master/SPI_UART
   //#define SOFTSPI   // Requires library from https://github.com/greiman/DigitalIO
-  
+
   /**********************/
   #define rf24_max(a,b) (a>b?a:b)
   #define rf24_min(a,b) (a<b?a:b)
@@ -28,8 +28,8 @@
   #if defined SPI_HAS_TRANSACTION && !defined SPI_UART && !defined SOFTSPI
     #define RF24_SPI_TRANSACTIONS
   #endif
- 
- 
+
+
 //ATXMega
 #if defined(__AVR_ATxmega64D3__) || defined(__AVR_ATxmega128D3__) || defined(__AVR_ATxmega192D3__) || defined(__AVR_ATxmega256D3__) || defined(__AVR_ATxmega384D3__) // In order to be available both in windows and linux this should take presence here.
   #define XMEGA
@@ -42,28 +42,28 @@
   // The includes.h file defines either RF24_RPi, MRAA, LITTLEWIRE or RF24_SPIDEV and includes the correct RF24_arch_config.h file
   #include "utility/includes.h"
 
-//ATTiny  
-#elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtiny861__)  
-  #define RF24_TINY
-  #include "utility/ATTiny/RF24_arch_config.h"
+//ATTiny
+#elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny4313__) || defined(__AVR_ATtiny861__)
+#define RF24_TINY
+#include "utility/ATTiny/RF24_arch_config.h"
 
 
-//LittleWire  
+//LittleWire
 #elif defined(LITTLEWIRE)
-  
-  #include "utility/LittleWire/RF24_arch_config.h"
 
-//Teensy  
+#include "utility/LittleWire/RF24_arch_config.h"
+
+//Teensy
 #elif defined (TEENSYDUINO)
 
-  #include "utility/Teensy/RF24_arch_config.h"  
+#include "utility/Teensy/RF24_arch_config.h"
 //Everything else
-#else 
+#else
 
   #include <Arduino.h>
-  
+
   // RF modules support 10 Mhz SPI bus speed
-  const uint32_t RF24_SPI_SPEED = 10000000;  
+  const uint32_t RF24_SPI_SPEED = 10000000;
 
 #if defined (ARDUINO) && !defined (__arm__) && !defined (__ARDUINO_X86__)
       #if defined SPI_UART
@@ -72,13 +72,13 @@
 	  #elif defined SOFTSPI
 	  // change these pins to your liking
       //
-      const uint8_t SOFT_SPI_MISO_PIN = 16; 
-      const uint8_t SOFT_SPI_MOSI_PIN = 15; 
-      const uint8_t SOFT_SPI_SCK_PIN = 14;  
+      const uint8_t SOFT_SPI_MISO_PIN = 16;
+      const uint8_t SOFT_SPI_MOSI_PIN = 15;
+      const uint8_t SOFT_SPI_SCK_PIN = 14;
       const uint8_t SPI_MODE = 0;
       #define _SPI spi
-      
-	  #else	    
+
+	  #else
 		#include <SPI.h>
 		#define _SPI SPI
 	  #endif
@@ -90,17 +90,19 @@
 
 
  #if defined(__arm__) || defined (__ARDUINO_X86__)
-   #include <SPI.h>
- #endif
-
- 
- #define _BV(x) (1<<(x))
- #if !defined(__arm__) && !defined (__ARDUINO_X86__)
+   #if defined (__arm__) && defined (SPI_UART)
+		#include <SPI_UART.h>
+		#define _SPI uspi
+   #else
+     #include <SPI.h>
+     #define _SPI SPI
+   #endif
+ #elif !defined(__arm__) && !defined (__ARDUINO_X86__)
    extern HardwareSPI SPI;
  #endif
 
+ #define _BV(x) (1<<(x))
 
-  #define _SPI SPI
 #endif
 
   #ifdef SERIAL_DEBUG
@@ -111,12 +113,12 @@
 	#define printf_P(...)
     #endif
   #endif
-  
+
 #if  defined (__ARDUINO_X86__)
 	#define printf_P printf
 	#define _BV(bit) (1<<(bit))
 #endif
-  
+
 // Progmem is Arduino-specific
 // Arduino DUE is arm and does not include avr/pgmspace
 #if defined (ARDUINO_ARCH_ESP8266)
@@ -125,7 +127,7 @@
   #define printf Serial.printf
   #define sprintf(...) os_sprintf( __VA_ARGS__ )
   #define printf_P printf
-  #define strlen_P strlen  
+  #define strlen_P strlen
   #define PROGMEM
   #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
   #define pgm_read_word(p) (*(p))
