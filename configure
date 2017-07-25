@@ -191,13 +191,13 @@ function gcc_cpu_flags {
 }
 
 function detect_driver {
-	if [[ $(execute_check "cat /proc/cpuinfo | grep Hardware | grep 'BCM2708\|BCM2709'") ]]; then
+	if [[ $(execute_check "cat /proc/cpuinfo | grep 'Hardware' | grep 'BCM2708\|BCM2709'") ]]; then
 		result=RPi
 	elif [[ $(execute_check 'ls /dev/spidev* 2>/dev/null') ]]; then
 		result=SPIDEV
-	elif [[ $(execute_check "${REMOTE_LDCONFIG} -p | grep libmraa") ]]; then
+	elif [[ $(execute_check "${REMOTE_LDCONFIG} -p | grep 'libmraa'") ]]; then
 		result=MRAA
-	elif [[ $(execute_check "${REMOTE_LDCONFIG} -p | grep liblittlewire-spi") ]]; then
+	elif [[ $(execute_check "${REMOTE_LDCONFIG} -p | grep 'liblittlewire-spi'") ]]; then
 		result=LittleWire
 	else
 		result=""
@@ -317,8 +317,10 @@ for opt do
 	esac
 done
 
-#*******************************************
-# remote machine verification
+
+########################################################################################################################
+## remote machine verification
+########################################################################################################################
 if [ "${REMOTE_HOST}" ]; then
 	if [ "${REMOTE_USER}" ]; then
 		REMOTE=${REMOTE_USER}@${REMOTE_HOST}
@@ -326,6 +328,7 @@ if [ "${REMOTE_HOST}" ]; then
 		REMOTE=${REMOTE_HOST}
 	fi
 fi
+
 if [ "${REMOTE}" ]; then
 	echo "[SECTION] Checking remote host."
 	if [ -z "${REMOTE_HOST}" ]; then
@@ -409,8 +412,9 @@ if [ -z "${CPUFLAGS}" ]; then
 fi
 
 
-#*******************************************
-# DRIVER detection
+########################################################################################################################
+## DRIVER detection
+########################################################################################################################
 if [ -z "${DRIVER}" ]; then
 	echo "[SECTION] Detecting DRIVER"
 	DRIVER=$(detect_driver)
@@ -438,8 +442,10 @@ LittleWire)
 	;;
 esac
 
-#*******************************************
-# OS detection
+
+########################################################################################################################
+## OS detection
+########################################################################################################################
 if [ -z "${OS}" ]; then
 	echo "[SECTION] Detecting OS."
 	OS=$(execute_check "uname")
